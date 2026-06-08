@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Inventory Manager</title>
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background:#f4f4f4;
+            padding:20px;
+        }
+
+        h1{
+            text-align:center;
+            color:#333;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+            background:white;
+            margin-top:20px;
+        }
+
+        th,td{
+            border:1px solid #ddd;
+            padding:12px;
+            text-align:center;
+        }
+
+        th{
+            background:#007bff;
+            color:white;
+        }
+
+        .low-stock{
+            background:#ffcccc;
+            color:red;
+            font-weight:bold;
+        }
+
+        button{
+            padding:5px 10px;
+            margin:2px;
+            cursor:pointer;
+        }
+
+        .add-product{
+            background:white;
+            padding:15px;
+            border-radius:8px;
+        }
+
+        input{
+            padding:8px;
+            margin:5px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Simple Inventory Manager</h1>
+
+<div class="add-product">
+    <input type="text" id="name" placeholder="Product Name">
+    <input type="number" id="stock" placeholder="Stock">
+    <button onclick="addProduct()">Add Product</button>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Stock</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody id="inventoryTable"></tbody>
+</table>
+
+<script>
+
+let products = [
+    {name:"Laptop", stock:10},
+    {name:"Mouse", stock:3},
+    {name:"Keyboard", stock:7}
+];
+
+function renderTable(){
+
+    let table = document.getElementById("inventoryTable");
+    table.innerHTML = "";
+
+    products.forEach((product,index)=>{
+
+        let status = product.stock < 5
+            ? "<span style='color:red'>Low Stock</span>"
+            : "<span style='color:green'>In Stock</span>";
+
+        let row = `
+        <tr class="${product.stock < 5 ? 'low-stock' : ''}">
+            <td>${product.name}</td>
+            <td>${product.stock}</td>
+            <td>${status}</td>
+            <td>
+                <button onclick="increaseStock(${index})">+</button>
+                <button onclick="decreaseStock(${index})">-</button>
+            </td>
+        </tr>
+        `;
+
+        table.innerHTML += row;
+    });
+}
+
+function increaseStock(index){
+    products[index].stock++;
+    renderTable();
+}
+
+function decreaseStock(index){
+    if(products[index].stock > 0){
+        products[index].stock--;
+        renderTable();
+    }
+}
+
+function addProduct(){
+
+    let name = document.getElementById("name").value;
+    let stock = parseInt(document.getElementById("stock").value);
+
+    if(name && !isNaN(stock)){
+        products.push({
+            name:name,
+            stock:stock
+        });
+
+        document.getElementById("name").value="";
+        document.getElementById("stock").value="";
+
+        renderTable();
+    }
+    else{
+        alert("Please enter valid details");
+    }
+}
+
+renderTable();
+
+</script>
+
+</body>
+</html>
